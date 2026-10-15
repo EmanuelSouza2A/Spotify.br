@@ -24,7 +24,7 @@
     
     /* Efeito de Vidro Luxuoso (Glassmorphism) */
     .glass-card {
-      background: rgba(18, 18, 18, 0.75);
+      background: rgba(18, 18, 18, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -119,9 +119,9 @@
       </div>
     </div>
 
-    <!-- Área da Capa do Álbum com as suas 6 fotos -->
-    <div class="relative w-full aspect-square max-w-[270px] mx-auto mb-6 rounded-2xl overflow-hidden shadow-2xl group border border-white/10 bg-neutral-900 flex items-center justify-center">
-      <img id="album-cover" src="" alt="Capa do Álbum" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+    <!-- Área da Capa do Álbum (Nitidez Alta Definida - sem distorção ou borrado) -->
+    <div class="relative w-full max-w-[280px] aspect-square mx-auto mb-6 rounded-2xl overflow-hidden shadow-2xl group border border-white/10 bg-black flex items-center justify-center">
+      <img id="album-cover" src="" alt="Capa do Álbum" class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" style="image-rendering: auto;">
       
       <!-- Overlay para Upload opcional -->
       <label for="photo-upload" class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center cursor-pointer p-4 text-center">
@@ -158,7 +158,7 @@
     </div>
 
     <!-- Controles de Mídia 100% Funcionais -->
-    <div class="flex items-center justify-around px-4 mb-8">
+    <div class="flex items-center justify-around px-4 mb-6">
       <button onclick="toggleShuffle()" id="shuffle-btn" class="text-neutral-400 hover:text-white text-lg transition-colors p-2" title="Modo Aleatório">
         <i class="fa-solid fa-shuffle"></i>
       </button>
@@ -176,8 +176,8 @@
       </button>
     </div>
 
-    <!-- Container do Spotify Player Oficial (Iframe) -->
-    <div id="spotify-embed-container" class="mb-6 rounded-2xl overflow-hidden border border-neutral-800/80 shadow-lg">
+    <!-- Container do Spotify Player Oficial (Agora visível e garantindo o som direto da música do Spotify) -->
+    <div id="spotify-embed-container" class="mb-6 rounded-2xl overflow-hidden border border-neutral-800/80 shadow-lg bg-black">
       <iframe id="spotify-iframe" style="border-radius:14px" src="" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
 
@@ -196,9 +196,8 @@
 
   </div>
 
-  <!-- Script Completo de Alta Performance -->
+  <!-- Script Completo Ajustado -->
   <script>
-    // Playlist com as 4 músicas, os trechos e as suas 6 fotos oficiais do ImgBB
     const playlist = [
       {
         title: "Oração",
@@ -208,7 +207,7 @@
           "https://i.ibb.co/YTJQHWBF/foto1.jpg", 
           "https://i.ibb.co/qFdTn214/foto2.jpg"
         ],
-        duration: 225, // em segundos (3:45)
+        duration: 225,
         lyrics: "“Se o algoritmo do universo pudesse calcular o que me faz feliz, tenho certeza de que o resultado seria exatamente você. Há conexões que parecem obra do destino, como aquela música que toca na hora exata em que a gente mais precisa.”"
       },
       {
@@ -219,7 +218,7 @@
           "https://i.ibb.co/bjPP4c1q/foto3.jpg", 
           "https://i.ibb.co/7t2V66c0/foto4.jpg"
         ],
-        duration: 210, // 3:30
+        duration: 210,
         lyrics: "“Você é a minha faixa favorita, aquela que eu repito sem cansar, que acalma meus dias caóticos e ilumina até os meus silêncios mais profundos. É um prazer imenso ter você comigo.”"
       },
       {
@@ -229,7 +228,7 @@
         images: [
           "https://i.ibb.co/21nwmC2r/foto5.jpg"
         ],
-        duration: 240, // 4:00
+        duration: 240,
         lyrics: "“Guardei estas canções aqui porque cada uma delas carrega um pedacinho de tudo o que eu sinto por ti, transformando momentos simples em memórias eternas.”"
       },
       {
@@ -239,7 +238,7 @@
         images: [
           "https://i.ibb.co/4wd0cJxH/foto6.jpg"
         ],
-        duration: 200, // 3:20
+        duration: 200,
         lyrics: "“...Mas faltam palavras no mundo para explicar a sorte que é ter você na minha vida. Que a gente continue trilhando esse caminho juntos, hoje e sempre.”"
       }
     ];
@@ -251,7 +250,6 @@
     let currentTime = 0;
     let timerInterval = null;
 
-    // Gerador de partículas e emojis românticos de fundo
     function initParticles() {
       const container = document.getElementById('particles-container');
       const symbols = ['💚', '✨', '🎶', '💖', '⭐', '🎵', '💫'];
@@ -268,7 +266,6 @@
     }
     initParticles();
 
-    // Sintetizador de Piano romântico na abertura
     function playPianoIntro() {
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -305,15 +302,14 @@
       document.getElementById('song-title').innerText = song.title;
       document.getElementById('song-artist').innerText = song.artist;
       
-      // Carrega a foto da música
+      // Carrega a imagem com alta nitidez garantida
       document.getElementById('album-cover').src = song.images[0];
       document.getElementById('lyrics-container').innerHTML = `<p class="fade-in">${song.lyrics}</p>`;
       
-      // Atualiza iframe do Spotify
+      // Atualiza o player do Spotify para tocar o áudio oficial da música
       const iframe = document.getElementById('spotify-iframe');
       iframe.src = `https://open.spotify.com/embed/track/${song.id}?utm_source=generator&theme=0`;
       
-      // Reseta e inicia o temporizador da barra de progresso
       currentTime = 0;
       updateProgressBarUI();
       startTimer();
@@ -325,10 +321,6 @@
     function startTimer() {
       clearInterval(timerInterval);
       const song = playlist[currentIndex];
-      
-      // Formata duração total
-      const totalMin = Math.floor(song.duration / 60);
-      const totalSec = song.duration % song.duration;
       document.getElementById('total-duration').innerText = formatTime(song.duration);
 
       timerInterval = setInterval(() => {
