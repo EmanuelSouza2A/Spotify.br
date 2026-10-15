@@ -6,7 +6,7 @@
   <title>Spotify • Nossa História de Amor</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome -->
+  <!-- FontAwesome para ícones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -22,7 +22,7 @@
     .spotify-green { color: #1DB954; }
     .bg-spotify-green { background-color: #1DB954; }
     
-    /* Vidro Luxuoso (Glassmorphism) */
+    /* Efeito Glassmorphism de Luxo */
     .glass-card {
       background: rgba(18, 18, 18, 0.88);
       backdrop-filter: blur(25px);
@@ -72,12 +72,12 @@
       z-index: 50;
     }
 
-    /* Barra de progresso customizada luxuosa */
+    /* Barra de progresso customizada */
     input[type=range] {
       accent-color: #1DB954;
     }
 
-    /* Efeito de equalizador animado */
+    /* Equalizador de áudio animado */
     @keyframes eqWave {
       0%, 100% { height: 4px; }
       50% { height: 16px; }
@@ -94,13 +94,15 @@
 </head>
 <body class="flex items-center justify-center p-4 relative min-h-screen">
 
-  <!-- Fundo com Partículas Românticas e Emojis do Spotify -->
+  <!-- Fundo com Partículas e Emojis do Spotify -->
   <div id="particles-container"></div>
 
-  <!-- Elemento de Áudio HTML5 Oficial (Garante a reprodução completa de 3+ minutos com som real) -->
-  <audio id="main-audio-player" preload="auto"></audio>
+  <!-- Player do YouTube 100% Oculto (Executa o áudio dos vídeos sem mostrar a janela) -->
+  <div style="position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none;">
+    <div id="youtube-player"></div>
+  </div>
 
-  <!-- ================= TELA 1: CAPA / ABERTURA DE LUXO ================= -->
+  <!-- ================= TELA 1: ABERTURA LUXUOSA ================= -->
   <div id="welcome-screen" class="w-full max-w-md glass-card rounded-3xl p-8 text-center fade-in relative z-10 shadow-2xl">
     <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-tr from-green-600 to-[#1DB954] rounded-full flex items-center justify-center shadow-lg shadow-green-500/30 animate-pulse">
       <i class="fa-solid fa-music text-black text-4xl"></i>
@@ -118,7 +120,7 @@
   </div>
 
 
-  <!-- ================= TELA 2: PLAYER DE LUXO & CARTA ================= -->
+  <!-- ================= TELA 2: PLAYER PRINCIPAL & CARTA ================= -->
   <div id="main-screen" class="hidden w-full max-w-xl glass-card rounded-3xl p-6 md:p-8 fade-in relative z-10 shadow-2xl">
     
     <!-- Header estilo Spotify -->
@@ -131,7 +133,6 @@
         </div>
       </div>
       <div class="text-xs text-neutral-300 bg-neutral-900/90 px-3 py-1.5 rounded-full flex items-center gap-2 border border-white/10 shadow-inner">
-        <!-- Equalizador visual animado -->
         <div class="flex items-end gap-0.5 h-4">
           <div class="eq-bar"></div>
           <div class="eq-bar"></div>
@@ -142,18 +143,18 @@
       </div>
     </div>
 
-    <!-- Área da Capa do Álbum (Nitidez Alta Definida - suas fotos do ImgBB) -->
+    <!-- Capa da Foto em Alta Definição -->
     <div class="relative w-full max-w-[280px] aspect-square mx-auto mb-6 rounded-2xl overflow-hidden shadow-2xl group border border-white/10 bg-black flex items-center justify-center">
       <img id="album-cover" src="" alt="Capa do Álbum" class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" style="image-rendering: auto;">
       
-      <!-- Overlay para Upload opcional -->
+      <!-- Upload opcional de foto -->
       <label for="photo-upload" class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center cursor-pointer p-4 text-center">
         <i class="fa-solid fa-camera text-2xl text-white mb-2"></i>
         <span class="text-xs font-semibold text-white">Trocar foto desta música</span>
       </label>
       <input type="file" id="photo-upload" accept="image/*" class="hidden" onchange="loadCustomPhoto(event)">
 
-      <!-- Código Visual Spotify (Waveform Code) -->
+      <!-- Código Visual Spotify -->
       <div class="absolute bottom-3 right-3 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center gap-2 border border-white/10 shadow-lg">
         <i class="fa-solid fa-barcode text-spotify-green text-sm"></i>
         <span class="text-[10px] tracking-widest text-white font-mono font-bold">SPOTIFY CODE</span>
@@ -171,17 +172,17 @@
       </button>
     </div>
 
-    <!-- Barra de Progresso Real (Com ponteiro e números andando) -->
+    <!-- Barra de Progresso Real Sincronizada com o YouTube -->
     <div class="mb-6 px-2">
       <div class="flex justify-between text-xs text-neutral-400 mb-1.5 font-mono font-semibold">
         <span id="current-time">0:00</span>
-        <span id="total-duration">3:00</span>
+        <span id="total-duration">0:00</span>
       </div>
       <input type="range" id="progress-bar" value="0" min="0" max="100" step="0.1" class="w-full h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer shadow-inner" oninput="seekMusic(this.value)">
     </div>
 
-    <!-- Controles de Mídia 100% Funcionais -->
-    <div class="flex items-center justify-around px-4 mb-6">
+    <!-- Controles do Player (Play/Pause, Próxima, Anterior, Aleatório e Repetir) -->
+    <div class="flex items-center justify-around px-4 mb-8">
       <button onclick="toggleShuffle()" id="shuffle-btn" class="text-neutral-400 hover:text-white text-lg transition-colors p-2 cursor-pointer" title="Modo Aleatório">
         <i class="fa-solid fa-shuffle"></i>
       </button>
@@ -199,7 +200,7 @@
       </button>
     </div>
 
-    <!-- Seção da Carta / Letras do Spotify com o Texto Principal -->
+    <!-- Seção da Carta / Letras do Spotify -->
     <div class="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-5 relative shadow-inner">
       <div class="flex items-center justify-between mb-3 border-b border-neutral-800/80 pb-2">
         <span class="text-xs font-extrabold tracking-widest text-spotify-green uppercase flex items-center gap-2">
@@ -208,20 +209,22 @@
         <span class="text-[11px] text-neutral-400 font-medium">Escrito com todo amor</span>
       </div>
       <div id="lyrics-container" class="text-sm text-neutral-300 leading-relaxed space-y-3 font-normal min-h-[95px] flex flex-col justify-center">
-        <!-- Texto injetado dinamicamente -->
+        <!-- Texto dinâmico -->
       </div>
     </div>
 
   </div>
 
-  <!-- Script Profissional Completo -->
+  <!-- Carregamento da API do YouTube -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
   <script>
-    // Playlist contendo as 4 músicas com arquivos de áudio completos de alta qualidade, suas 6 fotos do ImgBB e os textos
+    // Lista de Músicas extraídas diretamente dos 5 links do YouTube que você forneceu
     const playlist = [
       {
         title: "Oração",
         artist: "A Banda Mais Bonita da Cidade",
-        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Áudio longo completo
+        youtubeId: "4DhNQWw877w", // https://youtu.be/4DhNQWw877w
         images: [
           "https://i.ibb.co/YTJQHWBF/foto1.jpg", 
           "https://i.ibb.co/qFdTn214/foto2.jpg"
@@ -231,7 +234,7 @@
       {
         title: "Idiota",
         artist: "Jão",
-        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        youtubeId: "PPGjmXlWyc4", // https://youtu.be/PPGjmXlWyc4
         images: [
           "https://i.ibb.co/bjPP4c1q/foto3.jpg", 
           "https://i.ibb.co/7t2V66c0/foto4.jpg"
@@ -239,22 +242,31 @@
         lyrics: "“Você é a minha faixa favorita, aquela que eu repito sem cansar, que acalma meus dias caóticos e ilumina até os meus silêncios mais profundos. É um prazer imenso ter você comigo.”"
       },
       {
-        title: "Dengo / Partilhar",
-        artist: "Anavitória & Nando Reis",
-        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        title: "Partilhar",
+        artist: "DiDengo / Rubel & Anavitória",
+        youtubeId: "oqpLJ1BdNJQ", // https://youtu.be/oqpLJ1BdNJQ
         images: [
           "https://i.ibb.co/21nwmC2r/foto5.jpg"
         ],
         lyrics: "“Guardei estas canções aqui porque cada uma delas carrega um pedacinho de tudo o que eu sinto por ti, transformando momentos simples em memórias eternas.”"
       },
       {
-        title: "Pra Você Guardar o Meu Amor",
-        artist: "Nando Reis",
-        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+        title: "Latino Americano",
+        artist: "Drinho Sp",
+        youtubeId: "lu7HWo_01FQ", // https://youtu.be/lu7HWo_01FQ
         images: [
           "https://i.ibb.co/4wd0cJxH/foto6.jpg"
         ],
         lyrics: "“...Mas faltam palavras no mundo para explicar a sorte que é ter você na minha vida. Que a gente continue trilhando esse caminho juntos, hoje e sempre.”"
+      },
+      {
+        title: "Meu Endereço",
+        artist: "Ana Laura Lopes",
+        youtubeId: "IUu6_1ROwgk", // https://youtu.be/IUu6_1ROwgk
+        images: [
+          "https://i.ibb.co/YTJQHWBF/foto1.jpg"
+        ],
+        lyrics: "“Encontrar você foi como achar o meu endereço no mundo. Que esta trilha sonora te traga o mesmo sorriso que eu dou toda vez que penso em nós dois.”"
       }
     ];
 
@@ -262,10 +274,10 @@
     let isPlaying = false;
     let isShuffle = false;
     let isRepeat = false;
-    
-    const audioElement = document.getElementById('main-audio-player');
+    let ytPlayer = null;
+    let progressTimer = null;
 
-    // Inicializador de partículas e emojis românticos de fundo
+    // Partículas e Emojis de Fundo
     function initParticles() {
       const container = document.getElementById('particles-container');
       const symbols = ['💚', '✨', '🎶', '💖', '⭐', '🎵', '💫'];
@@ -282,7 +294,46 @@
     }
     initParticles();
 
-    // Sintetizador de Piano romântico na abertura
+    // Inicialização do Player do YouTube em segundo plano
+    function onYouTubeIframeAPIReady() {
+      ytPlayer = new YT.Player('youtube-player', {
+        height: '0',
+        width: '0',
+        videoId: playlist[0].youtubeId,
+        playerVars: {
+          'autoplay': 0,
+          'controls': 0,
+          'disablekb': 1,
+          'fs': 0,
+          'modestbranding': 1,
+          'rel': 0
+        },
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.PLAYING) {
+        isPlaying = true;
+        updatePlayButton();
+        startProgressTracking();
+      } else if (event.data === YT.PlayerState.PAUSED) {
+        isPlaying = false;
+        updatePlayButton();
+        stopProgressTracking();
+      } else if (event.data === YT.PlayerState.ENDED) {
+        stopProgressTracking();
+        if (isRepeat) {
+          ytPlayer.playVideo();
+        } else {
+          nextSong();
+        }
+      }
+    }
+
+    // Piano Romântico ao abrir a carta
     function playPianoIntro() {
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -309,8 +360,7 @@
     function openLetter() {
       playPianoIntro();
       document.getElementById('welcome-screen').classList.add('hidden');
-      const mainScreen = document.getElementById('main-screen');
-      mainScreen.classList.remove('hidden');
+      document.getElementById('main-screen').classList.remove('hidden');
       loadSong(currentIndex, true);
     }
 
@@ -318,45 +368,38 @@
       const song = playlist[index];
       document.getElementById('song-title').innerText = song.title;
       document.getElementById('song-artist').innerText = song.artist;
-      
-      // Imagem em alta definição
       document.getElementById('album-cover').src = song.images[0];
       document.getElementById('lyrics-container').innerHTML = `<p class="fade-in">${song.lyrics}</p>`;
-      
-      audioElement.src = song.audioUrl;
-      audioElement.load();
 
-      if (autoPlay) {
-        audioElement.play().then(() => {
-          isPlaying = true;
-          updatePlayButton();
-        }).catch(err => {
-          console.log("Autoplay impedido pelo navegador:", err);
-          isPlaying = false;
-          updatePlayButton();
-        });
+      if (ytPlayer && ytPlayer.loadVideoById) {
+        if (autoPlay) {
+          ytPlayer.loadVideoById(song.youtubeId);
+        } else {
+          ytPlayer.cueVideoById(song.youtubeId);
+        }
       }
     }
 
-    // Sincronização em tempo real da barra de progresso com o áudio real
-    audioElement.addEventListener('timeupdate', () => {
-      if (!isNaN(audioElement.duration)) {
-        const progressPercent = (audioElement.currentTime / audioElement.duration) * 100;
-        document.getElementById('progress-bar').value = progressPercent;
-        document.getElementById('current-time').innerText = formatTime(audioElement.currentTime);
-        document.getElementById('total-duration').innerText = formatTime(audioElement.duration);
-      }
-    });
+    function startProgressTracking() {
+      stopProgressTracking();
+      progressTimer = setInterval(() => {
+        if (ytPlayer && ytPlayer.getCurrentTime && ytPlayer.getDuration) {
+          const current = ytPlayer.getCurrentTime() || 0;
+          const total = ytPlayer.getDuration() || 0;
 
-    // Quando a música acaba
-    audioElement.addEventListener('ended', () => {
-      if (isRepeat) {
-        audioElement.currentTime = 0;
-        audioElement.play();
-      } else {
-        nextSong();
-      }
-    });
+          if (total > 0) {
+            const percent = (current / total) * 100;
+            document.getElementById('progress-bar').value = percent;
+            document.getElementById('current-time').innerText = formatTime(current);
+            document.getElementById('total-duration').innerText = formatTime(total);
+          }
+        }
+      }, 500);
+    }
+
+    function stopProgressTracking() {
+      if (progressTimer) clearInterval(progressTimer);
+    }
 
     function formatTime(seconds) {
       if (isNaN(seconds)) return "0:00";
@@ -366,22 +409,20 @@
     }
 
     function seekMusic(val) {
-      if (!isNaN(audioElement.duration)) {
-        const newTime = (val / 100) * audioElement.duration;
-        audioElement.currentTime = newTime;
+      if (ytPlayer && ytPlayer.getDuration) {
+        const total = ytPlayer.getDuration();
+        const seekToSeconds = (val / 100) * total;
+        ytPlayer.seekTo(seekToSeconds, true);
       }
     }
 
     function togglePlay() {
+      if (!ytPlayer) return;
       if (isPlaying) {
-        audioElement.pause();
-        isPlaying = false;
+        ytPlayer.pauseVideo();
       } else {
-        audioElement.play().then(() => {
-          isPlaying = true;
-        }).catch(e => console.log(e));
+        ytPlayer.playVideo();
       }
-      updatePlayButton();
     }
 
     function updatePlayButton() {
