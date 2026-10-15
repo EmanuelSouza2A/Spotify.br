@@ -97,7 +97,7 @@
   <!-- Fundo com Partículas e Emojis do Spotify -->
   <div id="particles-container"></div>
 
-  <!-- Player do YouTube 100% Oculto (Executa o áudio dos vídeos sem mostrar a janela) -->
+  <!-- Player do YouTube 100% Oculto (Executa o áudio completo dos vídeos sem mostrar a janela) -->
   <div style="position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none;">
     <div id="youtube-player"></div>
   </div>
@@ -143,11 +143,11 @@
       </div>
     </div>
 
-    <!-- Capa da Foto em Alta Definição -->
+    <!-- Capa da Foto em Alta Definição (Sem borrão, com as 6 fotos distintas do ImgBB) -->
     <div class="relative w-full max-w-[280px] aspect-square mx-auto mb-6 rounded-2xl overflow-hidden shadow-2xl group border border-white/10 bg-black flex items-center justify-center">
       <img id="album-cover" src="" alt="Capa do Álbum" class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" style="image-rendering: auto;">
       
-      <!-- Upload opcional de foto -->
+      <!-- Upload opcional de foto caso queira trocar alguma -->
       <label for="photo-upload" class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center cursor-pointer p-4 text-center">
         <i class="fa-solid fa-camera text-2xl text-white mb-2"></i>
         <span class="text-xs font-semibold text-white">Trocar foto desta música</span>
@@ -172,7 +172,7 @@
       </button>
     </div>
 
-    <!-- Barra de Progresso Real Sincronizada com o YouTube -->
+    <!-- Barra de Progresso Real Sincronizada -->
     <div class="mb-6 px-2">
       <div class="flex justify-between text-xs text-neutral-400 mb-1.5 font-mono font-semibold">
         <span id="current-time">0:00</span>
@@ -219,54 +219,49 @@
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
-    // Lista de Músicas extraídas diretamente dos 5 links do YouTube que você forneceu
+    // Playlist com as 6 músicas do YouTube e cada uma das 6 fotos exclusivas do ImgBB alinhadas perfeitamente
     const playlist = [
       {
         title: "Oração",
         artist: "A Banda Mais Bonita da Cidade",
-        youtubeId: "4DhNQWw877w", // https://youtu.be/4DhNQWw877w
-        images: [
-          "https://i.ibb.co/YTJQHWBF/foto1.jpg", 
-          "https://i.ibb.co/qFdTn214/foto2.jpg"
-        ],
+        youtubeId: "4DhNQWw877w",
+        image: "https://i.ibb.co/YTJQHWBF/foto1.jpg",
         lyrics: "“Se o algoritmo do universo pudesse calcular o que me faz feliz, tenho certeza de que o resultado seria exatamente você. Há conexões que parecem obra do destino, como aquela música que toca na hora exata em que a gente mais precisa.”"
       },
       {
         title: "Idiota",
         artist: "Jão",
-        youtubeId: "PPGjmXlWyc4", // https://youtu.be/PPGjmXlWyc4
-        images: [
-          "https://i.ibb.co/bjPP4c1q/foto3.jpg", 
-          "https://i.ibb.co/7t2V66c0/foto4.jpg"
-        ],
+        youtubeId: "PPGjmXlWyc4",
+        image: "https://i.ibb.co/qFdTn214/foto2.jpg",
         lyrics: "“Você é a minha faixa favorita, aquela que eu repito sem cansar, que acalma meus dias caóticos e ilumina até os meus silêncios mais profundos. É um prazer imenso ter você comigo.”"
       },
       {
         title: "Partilhar",
-        artist: "DiDengo / Rubel & Anavitória",
-        youtubeId: "oqpLJ1BdNJQ", // https://youtu.be/oqpLJ1BdNJQ
-        images: [
-          "https://i.ibb.co/21nwmC2r/foto5.jpg"
-        ],
+        artist: "DiDengo",
+        youtubeId: "oqpLJ1BdNJQ",
+        image: "https://i.ibb.co/bjPP4c1q/foto3.jpg",
         lyrics: "“Guardei estas canções aqui porque cada uma delas carrega um pedacinho de tudo o que eu sinto por ti, transformando momentos simples em memórias eternas.”"
       },
       {
         title: "Latino Americano",
         artist: "Drinho Sp",
-        youtubeId: "lu7HWo_01FQ", // https://youtu.be/lu7HWo_01FQ
-        images: [
-          "https://i.ibb.co/4wd0cJxH/foto6.jpg"
-        ],
+        youtubeId: "lu7HWo_01FQ",
+        image: "https://i.ibb.co/7t2V66c0/foto4.jpg",
         lyrics: "“...Mas faltam palavras no mundo para explicar a sorte que é ter você na minha vida. Que a gente continue trilhando esse caminho juntos, hoje e sempre.”"
       },
       {
         title: "Meu Endereço",
         artist: "Ana Laura Lopes",
-        youtubeId: "IUu6_1ROwgk", // https://youtu.be/IUu6_1ROwgk
-        images: [
-          "https://i.ibb.co/YTJQHWBF/foto1.jpg"
-        ],
+        youtubeId: "IUu6_1ROwgk",
+        image: "https://i.ibb.co/21nwmC2r/foto5.jpg",
         lyrics: "“Encontrar você foi como achar o meu endereço no mundo. Que esta trilha sonora te traga o mesmo sorriso que eu dou toda vez que penso em nós dois.”"
+      },
+      {
+        title: "Bem (Chapéu de Palha)",
+        artist: "Nuno Vieira",
+        youtubeId: "9evrjEC4vc4",
+        image: "https://i.ibb.co/4wd0cJxH/foto6.jpg",
+        lyrics: "“Se tu me visse como eu vejo tu, meu bem, eu ficaria bem, tu ficaria bem. No meu quarto, teu cheiro tu esqueceu aqui, e na tua falta me resta solidão... mas tenho você no coração.”"
       }
     ];
 
@@ -368,7 +363,7 @@
       const song = playlist[index];
       document.getElementById('song-title').innerText = song.title;
       document.getElementById('song-artist').innerText = song.artist;
-      document.getElementById('album-cover').src = song.images[0];
+      document.getElementById('album-cover').src = song.image;
       document.getElementById('lyrics-container').innerHTML = `<p class="fade-in">${song.lyrics}</p>`;
 
       if (ytPlayer && ytPlayer.loadVideoById) {
@@ -494,7 +489,7 @@
         const reader = new FileReader();
         reader.onload = function(e) {
           document.getElementById('album-cover').src = e.target.result;
-          playlist[currentIndex].images[0] = e.target.result;
+          playlist[currentIndex].image = e.target.result;
         }
         reader.readAsDataURL(file);
       }
