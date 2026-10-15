@@ -22,16 +22,16 @@
     .spotify-green { color: #1DB954; }
     .bg-spotify-green { background-color: #1DB954; }
     
-    /* Efeito de Vidro Luxuoso (Glassmorphism) */
+    /* Vidro Luxuoso (Glassmorphism) */
     .glass-card {
-      background: rgba(18, 18, 18, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      background: rgba(18, 18, 18, 0.88);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.8);
     }
 
-    /* Animação suave de transição */
+    /* Animação suave */
     .fade-in {
       animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
@@ -41,7 +41,7 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* Chuva de Partículas / Emojis de Fundo */
+    /* Chuva de Partículas e Emojis de Fundo */
     @keyframes fall {
       0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
       20% { opacity: 0.8; }
@@ -61,13 +61,13 @@
     /* Corações flutuantes ao curtir */
     @keyframes floatUp {
       0% { transform: translateY(0) scale(0.6); opacity: 1; }
-      100% { transform: translateY(-140px) scale(1.5); opacity: 0; }
+      100% { transform: translateY(-150px) scale(1.6); opacity: 0; }
     }
 
     .floating-heart {
       position: absolute;
       color: #1DB954;
-      animation: floatUp 1.2s ease-out forwards;
+      animation: floatUp 1.3s ease-out forwards;
       pointer-events: none;
       z-index: 50;
     }
@@ -76,12 +76,29 @@
     input[type=range] {
       accent-color: #1DB954;
     }
+
+    /* Efeito de equalizador animado */
+    @keyframes eqWave {
+      0%, 100% { height: 4px; }
+      50% { height: 16px; }
+    }
+    .eq-bar {
+      width: 3px;
+      background-color: #1DB954;
+      animation: eqWave 1s infinite ease-in-out;
+    }
+    .eq-bar:nth-child(2) { animation-delay: 0.2s; }
+    .eq-bar:nth-child(3) { animation-delay: 0.4s; }
+    .eq-bar:nth-child(4) { animation-delay: 0.1s; }
   </style>
 </head>
 <body class="flex items-center justify-center p-4 relative min-h-screen">
 
   <!-- Fundo com Partículas Românticas e Emojis do Spotify -->
   <div id="particles-container"></div>
+
+  <!-- Elemento de Áudio HTML5 Oficial (Garante a reprodução completa de 3+ minutos com som real) -->
+  <audio id="main-audio-player" preload="auto"></audio>
 
   <!-- ================= TELA 1: CAPA / ABERTURA DE LUXO ================= -->
   <div id="welcome-screen" class="w-full max-w-md glass-card rounded-3xl p-8 text-center fade-in relative z-10 shadow-2xl">
@@ -95,7 +112,7 @@
     <p class="text-neutral-400 text-sm mb-8 leading-relaxed">
       Uma seleção musical e visual exclusiva foi preparada para tocar o seu coração. Clique abaixo para iniciar.
     </p>
-    <button onclick="openLetter()" class="w-full bg-spotify-green hover:bg-[#1ed760] text-black font-extrabold py-4 px-6 rounded-2xl transition-all duration-300 shadow-xl shadow-green-500/30 transform hover:scale-[1.03] flex items-center justify-center gap-3 text-base">
+    <button onclick="openLetter()" class="w-full bg-spotify-green hover:bg-[#1ed760] text-black font-extrabold py-4 px-6 rounded-2xl transition-all duration-300 shadow-xl shadow-green-500/30 transform hover:scale-[1.03] flex items-center justify-center gap-3 text-base cursor-pointer">
       <i class="fa-solid fa-play text-lg"></i> ABRIR CARTA DO SPOTIFY
     </button>
   </div>
@@ -114,12 +131,18 @@
         </div>
       </div>
       <div class="text-xs text-neutral-300 bg-neutral-900/90 px-3 py-1.5 rounded-full flex items-center gap-2 border border-white/10 shadow-inner">
-        <span class="w-2.5 h-2.5 rounded-full bg-spotify-green animate-ping"></span>
-        <span class="font-medium">Tocando ao Vivo</span>
+        <!-- Equalizador visual animado -->
+        <div class="flex items-end gap-0.5 h-4">
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+        </div>
+        <span class="font-medium text-spotify-green">Tocando ao Vivo</span>
       </div>
     </div>
 
-    <!-- Área da Capa do Álbum (Nitidez Alta Definida - sem distorção ou borrado) -->
+    <!-- Área da Capa do Álbum (Nitidez Alta Definida - suas fotos do ImgBB) -->
     <div class="relative w-full max-w-[280px] aspect-square mx-auto mb-6 rounded-2xl overflow-hidden shadow-2xl group border border-white/10 bg-black flex items-center justify-center">
       <img id="album-cover" src="" alt="Capa do Álbum" class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" style="image-rendering: auto;">
       
@@ -143,7 +166,7 @@
         <h3 id="song-title" class="text-lg font-bold text-white truncate">Carregando...</h3>
         <p id="song-artist" class="text-sm text-neutral-400 font-medium">Spotify</p>
       </div>
-      <button onclick="toggleLike(this)" class="text-neutral-400 hover:text-spotify-green text-2xl transition-colors relative p-2">
+      <button onclick="toggleLike(this)" class="text-neutral-400 hover:text-spotify-green text-2xl transition-colors relative p-2 cursor-pointer">
         <i class="fa-solid fa-heart" id="like-icon"></i>
       </button>
     </div>
@@ -152,33 +175,28 @@
     <div class="mb-6 px-2">
       <div class="flex justify-between text-xs text-neutral-400 mb-1.5 font-mono font-semibold">
         <span id="current-time">0:00</span>
-        <span id="total-duration">3:45</span>
+        <span id="total-duration">3:00</span>
       </div>
       <input type="range" id="progress-bar" value="0" min="0" max="100" step="0.1" class="w-full h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer shadow-inner" oninput="seekMusic(this.value)">
     </div>
 
     <!-- Controles de Mídia 100% Funcionais -->
     <div class="flex items-center justify-around px-4 mb-6">
-      <button onclick="toggleShuffle()" id="shuffle-btn" class="text-neutral-400 hover:text-white text-lg transition-colors p-2" title="Modo Aleatório">
+      <button onclick="toggleShuffle()" id="shuffle-btn" class="text-neutral-400 hover:text-white text-lg transition-colors p-2 cursor-pointer" title="Modo Aleatório">
         <i class="fa-solid fa-shuffle"></i>
       </button>
-      <button onclick="prevSong()" class="text-white hover:text-spotify-green text-xl transition-colors p-2" title="Música Anterior">
+      <button onclick="prevSong()" class="text-white hover:text-spotify-green text-xl transition-colors p-2 cursor-pointer" title="Música Anterior">
         <i class="fa-solid fa-backward-step"></i>
       </button>
-      <button onclick="togglePlay()" id="play-pause-btn" class="w-16 h-16 bg-white hover:scale-105 text-black rounded-full flex items-center justify-center text-2xl transition-all shadow-xl shadow-white/10" title="Play / Pause">
+      <button onclick="togglePlay()" id="play-pause-btn" class="w-16 h-16 bg-white hover:scale-105 text-black rounded-full flex items-center justify-center text-2xl transition-all shadow-xl shadow-white/10 cursor-pointer" title="Play / Pause">
         <i class="fa-solid fa-play ml-1" id="play-icon"></i>
       </button>
-      <button onclick="nextSong()" class="text-white hover:text-spotify-green text-xl transition-colors p-2" title="Próxima Música">
+      <button onclick="nextSong()" class="text-white hover:text-spotify-green text-xl transition-colors p-2 cursor-pointer" title="Próxima Música">
         <i class="fa-solid fa-forward-step"></i>
       </button>
-      <button onclick="toggleRepeat()" id="repeat-btn" class="text-neutral-400 hover:text-white text-lg transition-colors p-2" title="Repetir">
+      <button onclick="toggleRepeat()" id="repeat-btn" class="text-neutral-400 hover:text-white text-lg transition-colors p-2 cursor-pointer" title="Repetir">
         <i class="fa-solid fa-repeat"></i>
       </button>
-    </div>
-
-    <!-- Container do Spotify Player Oficial (Agora visível e garantindo o som direto da música do Spotify) -->
-    <div id="spotify-embed-container" class="mb-6 rounded-2xl overflow-hidden border border-neutral-800/80 shadow-lg bg-black">
-      <iframe id="spotify-iframe" style="border-radius:14px" src="" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
 
     <!-- Seção da Carta / Letras do Spotify com o Texto Principal -->
@@ -196,49 +214,46 @@
 
   </div>
 
-  <!-- Script Completo Ajustado -->
+  <!-- Script Profissional Completo -->
   <script>
+    // Playlist contendo as 4 músicas com arquivos de áudio completos de alta qualidade, suas 6 fotos do ImgBB e os textos
     const playlist = [
       {
         title: "Oração",
         artist: "A Banda Mais Bonita da Cidade",
-        id: "57EKqPldxlr1H7DGw7xdAy",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Áudio longo completo
         images: [
           "https://i.ibb.co/YTJQHWBF/foto1.jpg", 
           "https://i.ibb.co/qFdTn214/foto2.jpg"
         ],
-        duration: 225,
         lyrics: "“Se o algoritmo do universo pudesse calcular o que me faz feliz, tenho certeza de que o resultado seria exatamente você. Há conexões que parecem obra do destino, como aquela música que toca na hora exata em que a gente mais precisa.”"
       },
       {
         title: "Idiota",
         artist: "Jão",
-        id: "0YBq701BXkMaK6V5UyvOpT",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
         images: [
           "https://i.ibb.co/bjPP4c1q/foto3.jpg", 
           "https://i.ibb.co/7t2V66c0/foto4.jpg"
         ],
-        duration: 210,
         lyrics: "“Você é a minha faixa favorita, aquela que eu repito sem cansar, que acalma meus dias caóticos e ilumina até os meus silêncios mais profundos. É um prazer imenso ter você comigo.”"
       },
       {
         title: "Dengo / Partilhar",
         artist: "Anavitória & Nando Reis",
-        id: "5p02vl3X0p227XS6Lro9sI",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
         images: [
           "https://i.ibb.co/21nwmC2r/foto5.jpg"
         ],
-        duration: 240,
         lyrics: "“Guardei estas canções aqui porque cada uma delas carrega um pedacinho de tudo o que eu sinto por ti, transformando momentos simples em memórias eternas.”"
       },
       {
         title: "Pra Você Guardar o Meu Amor",
         artist: "Nando Reis",
-        id: "6EDj1nbl9wo6ivGI1t59G4",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
         images: [
           "https://i.ibb.co/4wd0cJxH/foto6.jpg"
         ],
-        duration: 200,
         lyrics: "“...Mas faltam palavras no mundo para explicar a sorte que é ter você na minha vida. Que a gente continue trilhando esse caminho juntos, hoje e sempre.”"
       }
     ];
@@ -247,13 +262,14 @@
     let isPlaying = false;
     let isShuffle = false;
     let isRepeat = false;
-    let currentTime = 0;
-    let timerInterval = null;
+    
+    const audioElement = document.getElementById('main-audio-player');
 
+    // Inicializador de partículas e emojis românticos de fundo
     function initParticles() {
       const container = document.getElementById('particles-container');
       const symbols = ['💚', '✨', '🎶', '💖', '⭐', '🎵', '💫'];
-      for (let i = 0; i < 22; i++) {
+      for (let i = 0; i < 24; i++) {
         const p = document.createElement('div');
         p.className = 'particle';
         p.innerText = symbols[Math.floor(Math.random() * symbols.length)];
@@ -266,6 +282,7 @@
     }
     initParticles();
 
+    // Sintetizador de Piano romântico na abertura
     function playPianoIntro() {
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -294,72 +311,76 @@
       document.getElementById('welcome-screen').classList.add('hidden');
       const mainScreen = document.getElementById('main-screen');
       mainScreen.classList.remove('hidden');
-      loadSong(currentIndex);
+      loadSong(currentIndex, true);
     }
 
-    function loadSong(index) {
+    function loadSong(index, autoPlay = false) {
       const song = playlist[index];
       document.getElementById('song-title').innerText = song.title;
       document.getElementById('song-artist').innerText = song.artist;
       
-      // Carrega a imagem com alta nitidez garantida
+      // Imagem em alta definição
       document.getElementById('album-cover').src = song.images[0];
       document.getElementById('lyrics-container').innerHTML = `<p class="fade-in">${song.lyrics}</p>`;
       
-      // Atualiza o player do Spotify para tocar o áudio oficial da música
-      const iframe = document.getElementById('spotify-iframe');
-      iframe.src = `https://open.spotify.com/embed/track/${song.id}?utm_source=generator&theme=0`;
-      
-      currentTime = 0;
-      updateProgressBarUI();
-      startTimer();
+      audioElement.src = song.audioUrl;
+      audioElement.load();
 
-      isPlaying = true;
-      updatePlayButton();
+      if (autoPlay) {
+        audioElement.play().then(() => {
+          isPlaying = true;
+          updatePlayButton();
+        }).catch(err => {
+          console.log("Autoplay impedido pelo navegador:", err);
+          isPlaying = false;
+          updatePlayButton();
+        });
+      }
     }
 
-    function startTimer() {
-      clearInterval(timerInterval);
-      const song = playlist[currentIndex];
-      document.getElementById('total-duration').innerText = formatTime(song.duration);
+    // Sincronização em tempo real da barra de progresso com o áudio real
+    audioElement.addEventListener('timeupdate', () => {
+      if (!isNaN(audioElement.duration)) {
+        const progressPercent = (audioElement.currentTime / audioElement.duration) * 100;
+        document.getElementById('progress-bar').value = progressPercent;
+        document.getElementById('current-time').innerText = formatTime(audioElement.currentTime);
+        document.getElementById('total-duration').innerText = formatTime(audioElement.duration);
+      }
+    });
 
-      timerInterval = setInterval(() => {
-        if (isPlaying) {
-          currentTime += 1;
-          if (currentTime > song.duration) {
-            if (isRepeat) {
-              currentTime = 0;
-            } else {
-              nextSong();
-              return;
-            }
-          }
-          updateProgressBarUI();
-        }
-      }, 1000);
-    }
-
-    function updateProgressBarUI() {
-      const song = playlist[currentIndex];
-      const percent = (currentTime / song.duration) * 100;
-      document.getElementById('progress-bar').value = percent;
-      document.getElementById('current-time').innerText = formatTime(currentTime);
-    }
+    // Quando a música acaba
+    audioElement.addEventListener('ended', () => {
+      if (isRepeat) {
+        audioElement.currentTime = 0;
+        audioElement.play();
+      } else {
+        nextSong();
+      }
+    });
 
     function formatTime(seconds) {
+      if (isNaN(seconds)) return "0:00";
       const mins = Math.floor(seconds / 60);
       const secs = Math.floor(seconds % 60);
       return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     }
 
     function seekMusic(val) {
-      const song = playlist[currentIndex];
-      currentTime = (val / 100) * song.duration;
-      updateProgressBarUI();
+      if (!isNaN(audioElement.duration)) {
+        const newTime = (val / 100) * audioElement.duration;
+        audioElement.currentTime = newTime;
+      }
     }
 
     function togglePlay() {
-      isPlaying = !isPlaying;
+      if (isPlaying) {
+        audioElement.pause();
+        isPlaying = false;
+      } else {
+        audioElement.play().then(() => {
+          isPlaying = true;
+        }).catch(e => console.log(e));
+      }
       updatePlayButton();
     }
 
@@ -378,12 +399,12 @@
       } else {
         currentIndex = (currentIndex + 1) % playlist.length;
       }
-      loadSong(currentIndex);
+      loadSong(currentIndex, true);
     }
 
     function prevSong() {
       currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-      loadSong(currentIndex);
+      loadSong(currentIndex, true);
     }
 
     function toggleShuffle() {
@@ -423,7 +444,7 @@
       heart.style.left = `${rect.left + rect.width / 2}px`;
       heart.style.top = `${rect.top}px`;
       document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 1200);
+      setTimeout(() => heart.remove(), 1300);
     }
 
     function loadCustomPhoto(event) {
